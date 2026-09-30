@@ -52,9 +52,23 @@ class TeifGenerator {
         $xtotaltva = $tva0 + $tva7 + $tva13 + $tva19;
         $xTtcfacture = $xtotaltva + $Htfacture + $timbre;
         
-        // Format date ddMMyyyy
-        if($dAtefact instanceof DateTime) $dateObj = $dAtefact;
-        else $dateObj = new DateTime($dAtefact);
+        // Format date ddMMyyyy - GESTION 46259 (numérique Excel)
+        $dateObj = null;
+        try {
+            if($dAtefact instanceof DateTime) {
+                $dateObj = $dAtefact;
+            } elseif($dAtefact instanceof \DateTimeInterface) {
+                $dateObj = new DateTime($dAtefact->format('Y-m-d H:i:s'));
+            } elseif(is_numeric($dAtefact)) {
+                // 46259 = date Excel
+                $dateObj = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(floatval($dAtefact));
+            } else {
+                $dateObj = new DateTime(trim((string)$dAtefact));
+            }
+        } catch(Exception $e) {
+            // Fallback: aujourd'hui si date illisible
+            $dateObj = new DateTime();
+        }
         $sDateFormatee = $dateObj->format('dmY');
         
         $this->data = compact('sFournisseur','sMatfiscfour','sRcfour','sAdrfour','sClient','sMatfisccli','sAdrcli','sNumfact','sDateFormatee','sDevise','tabARTICLE','tabQUANTITE','tabPUHT','tabTotht','tabTva','tabTtc','tva19','tva7','tva13','tva0','timbre','Htfacture','xtotaltva','xTtcfacture','dateObj');
