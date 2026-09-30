@@ -94,30 +94,30 @@ class TeifGenerator {
         
         $ligneXML = 0;
         for($k=1; $k<=14; $k++) {
-            if(empty($d['tabARTICLE'][$k]) || floatval($d['tabTotht'][$k])==0) continue;
+            if(empty($d['tabARTICLE'][$k]) || floatval($d['tabTotht'][$k] ?? 0)==0) continue;
             $ligneXML++;
             $taux = $d['tabTotht'][$k] > 0 ? round($d['tabTva'][$k]*100/$d['tabTotht'][$k]) : 0;
             $xml .= '      <Lin>'."\n";
             $xml .= '        <ItemIdentifier>'.$ligneXML.'</ItemIdentifier>'."\n";
             $xml .= '        <LinImd lang="fr"><ItemCode>ART'.str_pad($ligneXML,2,'0',STR_PAD_LEFT).'</ItemCode><ItemDescription>'.$this->esc($d['tabARTICLE'][$k]).'</ItemDescription></LinImd>'."\n";
-            $xml .= '        <LinQty><Quantity measurementUnit="PCE">'.number_format($d['tabQUANTITE'][$k],3,'.','').'</Quantity></LinQty>'."\n";
-            $xml .= '        <LinTax><LinTaxDetails><TaxTypeName code="I-160">TVA</TaxTypeName><TaxCategory>Rate</TaxCategory><TaxDetails><TaxRateDetailType><TaxRate>'.$taux.'</TaxRate><TaxRateBasis>'.number_format($d['tabTotht'][$k],3,'.','').'</TaxRateBasis></TaxRateDetailType></TaxDetails></LinTaxDetails></LinTax>'."\n";
-            $xml .= '        <LinMoa><MoaDetails><Moa currencyCodeList="ISO_4217" amountTypeCode="I-180"><Amount currencyIdentifier="'.$d['sDevise'].'">'.number_format($d['tabTotht'][$k],3,'.','').'</Amount></Moa></MoaDetails><MoaDetails><Moa currencyCodeList="ISO_4217" amountTypeCode="I-176"><Amount currencyIdentifier="'.$d['sDevise'].'">'.number_format($d['tabTva'][$k],3,'.','').'</Amount></Moa></MoaDetails></LinMoa>'."\n";
+            $xml .= '        <LinQty><Quantity measurementUnit="PCE">'.number_format(floatval($d['tabQUANTITE'][$k] ?? 0),3,'.','').'</Quantity></LinQty>'."\n";
+            $xml .= '        <LinTax><LinTaxDetails><TaxTypeName code="I-160">TVA</TaxTypeName><TaxCategory>Rate</TaxCategory><TaxDetails><TaxRateDetailType><TaxRate>'.$taux.'</TaxRate><TaxRateBasis>'.number_format(floatval($d['tabTotht'][$k] ?? 0),3,'.','').'</TaxRateBasis></TaxRateDetailType></TaxDetails></LinTaxDetails></LinTax>'."\n";
+            $xml .= '        <LinMoa><MoaDetails><Moa currencyCodeList="ISO_4217" amountTypeCode="I-180"><Amount currencyIdentifier="'.$d['sDevise'].'">'.number_format(floatval($d['tabTotht'][$k] ?? 0),3,'.','').'</Amount></Moa></MoaDetails><MoaDetails><Moa currencyCodeList="ISO_4217" amountTypeCode="I-176"><Amount currencyIdentifier="'.$d['sDevise'].'">'.number_format(floatval($d['tabTva'][$k] ?? 0),3,'.','').'</Amount></Moa></MoaDetails></LinMoa>'."\n";
             $xml .= '      </Lin>'."\n";
         }
         $xml .= '    </LinSection>'."\n";
         $xml .= '    <InvoiceMoa>'."\n";
-        $xml .= '      <AmountDetails><Moa currencyCodeList="ISO_4217" amountTypeCode="I-180"><Amount currencyIdentifier="'.$d['sDevise'].'">'.number_format($d['Htfacture'],3,'.','').'</Amount></Moa></AmountDetails>'."\n";
-        $xml .= '      <AmountDetails><Moa currencyCodeList="ISO_4217" amountTypeCode="I-176"><Amount currencyIdentifier="'.$d['sDevise'].'">'.number_format($d['xtotaltva'],3,'.','').'</Amount></Moa></AmountDetails>'."\n";
-        $xml .= '      <AmountDetails><Moa currencyCodeList="ISO_4217" amountTypeCode="I-181"><Amount currencyIdentifier="'.$d['sDevise'].'">'.number_format($d['xTtcfacture'],3,'.','').'</Amount></Moa></AmountDetails>'."\n";
+        $xml .= '      <AmountDetails><Moa currencyCodeList="ISO_4217" amountTypeCode="I-180"><Amount currencyIdentifier="'.$d['sDevise'].'">'.number_format(floatval($d['Htfacture'] ?? 0),3,'.','').'</Amount></Moa></AmountDetails>'."\n";
+        $xml .= '      <AmountDetails><Moa currencyCodeList="ISO_4217" amountTypeCode="I-176"><Amount currencyIdentifier="'.$d['sDevise'].'">'.number_format(floatval($d['xtotaltva'] ?? 0),3,'.','').'</Amount></Moa></AmountDetails>'."\n";
+        $xml .= '      <AmountDetails><Moa currencyCodeList="ISO_4217" amountTypeCode="I-181"><Amount currencyIdentifier="'.$d['sDevise'].'">'.number_format(floatval($d['xTtcfacture'] ?? 0),3,'.','').'</Amount></Moa></AmountDetails>'."\n";
         $xml .= '    </InvoiceMoa>'."\n";
         
         if($d['tva19']>0) {
-            $xml .= '    <InvoiceTax><InvoiceTaxDetails><Tax><TaxTypeName code="I-160">TVA 19%</TaxTypeName><TaxCategory>Rate</TaxCategory><TaxDetails><TaxRateDetailType><TaxRate>19</TaxRate><TaxRateBasis>'.number_format($d['Htfacture'],3,'.','').'</TaxRateBasis></TaxRateDetailType></TaxDetails></Tax><AmountDetailsSection><MoaDetails><Moa currencyCodeList="ISO_4217" amountTypeCode="I-176"><Amount currencyIdentifier="'.$d['sDevise'].'">'.number_format($d['tva19'],3,'.','').'</Amount></Moa></MoaDetails></AmountDetailsSection></InvoiceTaxDetails></InvoiceTax>'."\n";
+            $xml .= '    <InvoiceTax><InvoiceTaxDetails><Tax><TaxTypeName code="I-160">TVA 19%</TaxTypeName><TaxCategory>Rate</TaxCategory><TaxDetails><TaxRateDetailType><TaxRate>19</TaxRate><TaxRateBasis>'.number_format(floatval($d['Htfacture'] ?? 0),3,'.','').'</TaxRateBasis></TaxRateDetailType></TaxDetails></Tax><AmountDetailsSection><MoaDetails><Moa currencyCodeList="ISO_4217" amountTypeCode="I-176"><Amount currencyIdentifier="'.$d['sDevise'].'">'.number_format(floatval($d['tva19'] ?? 0),3,'.','').'</Amount></Moa></MoaDetails></AmountDetailsSection></InvoiceTaxDetails></InvoiceTax>'."\n";
         }
         
         if($d['timbre']>0) {
-            $xml .= '    <InvoiceAlc><AlcDetails><Alc><AlcTypeName code="I-190">Timbre fiscal</AlcTypeName></Alc><AmountDetailsSection><MoaDetails><Moa currencyCodeList="ISO_4217" amountTypeCode="I-184"><Amount currencyIdentifier="'.$d['sDevise'].'">'.number_format($d['timbre'],3,'.','').'</Amount></Moa></MoaDetails></AmountDetailsSection></AlcDetails></InvoiceAlc>'."\n";
+            $xml .= '    <InvoiceAlc><AlcDetails><Alc><AlcTypeName code="I-190">Timbre fiscal</AlcTypeName></Alc><AmountDetailsSection><MoaDetails><Moa currencyCodeList="ISO_4217" amountTypeCode="I-184"><Amount currencyIdentifier="'.$d['sDevise'].'">'.number_format(floatval($d['timbre'] ?? 0),3,'.','').'</Amount></Moa></MoaDetails></AmountDetailsSection></AlcDetails></InvoiceAlc>'."\n";
         }
         
         $xml .= '  </InvoiceBody>'."\n";
