@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEIF version="1.9.0" controlingAgency="TTN">
+  <InvoiceHeader>
+    <MessageSenderIdentifier type="I-01">1234567V/A/M/000</MessageSenderIdentifier>
+    <MessageRecieverIdentifier type="I-01">7654321B/A/M/000</MessageRecieverIdentifier>
+  </InvoiceHeader>
+  <InvoiceBody>
+    <Bgm><DocumentIdentifier>20260001</DocumentIdentifier><DocumentType code="I-11">FACTURE</DocumentType></Bgm>
+    <Dtm><DateText functionCode="I-31" format="ddMMyyyy">25082026</DateText></Dtm>
+    <PartnerSection>
+      <PartnerDetails functionCode="I-62"><Nad><PartnerIdentifier type="I-01">1234567V/A/M/000</PartnerIdentifier><PartnerName nameType="Physical">SOCIETE FOURNISSEUR</PartnerName></Nad></PartnerDetails>
+      <PartnerDetails functionCode="I-63"><Nad><PartnerIdentifier type="I-01">7654321B/A/M/000</PartnerIdentifier><PartnerName nameType="Physical">client acheteur</PartnerName></Nad></PartnerDetails>
+    </PartnerSection>
+    <LinSection>
+      <Lin><ItemIdentifier>1</ItemIdentifier><LinImd lang="fr"><ItemCode>ART01</ItemCode><ItemDescription>logiciel de facturation</ItemDescription></LinImd><LinQty><Quantity measurementUnit="PCE">1.000</Quantity></LinQty><LinMoa><MoaDetails><Moa currencyCodeList="ISO_4217" amountTypeCode="I-180"><Amount currencyIdentifier="TND">1500.000</Amount></Moa></MoaDetails></LinMoa></Lin>
+      <Lin><ItemIdentifier>2</ItemIdentifier><LinImd lang="fr"><ItemCode>ART02</ItemCode><ItemDescription>formation et mise en œuvre</ItemDescription></LinImd><LinQty><Quantity measurementUnit="PCE">1.000</Quantity></LinQty><LinMoa><MoaDetails><Moa currencyCodeList="ISO_4217" amountTypeCode="I-180"><Amount currencyIdentifier="TND">500.000</Amount></Moa></MoaDetails></LinMoa></Lin>
+    </LinSection>
+    <InvoiceMoa>
+      <AmountDetails><Moa currencyCodeList="ISO_4217" amountTypeCode="I-180"><Amount currencyIdentifier="TND">2000.000</Amount></Moa></AmountDetails>
+      <AmountDetails><Moa currencyCodeList="ISO_4217" amountTypeCode="I-176"><Amount currencyIdentifier="TND">380.000</Amount></Moa></AmountDetails>
+      <AmountDetails><Moa currencyCodeList="ISO_4217" amountTypeCode="I-181"><Amount currencyIdentifier="TND">2381.000</Amount></Moa></AmountDetails>
+    </InvoiceMoa>
+    <InvoiceTax><InvoiceTaxDetails><Tax><TaxTypeName code="I-160">TVA 19%</TaxTypeName><TaxCategory>Rate</TaxCategory><TaxDetails><TaxRateDetailType><TaxRate>19</TaxRate><TaxRateBasis>2000.000</TaxRateBasis></TaxRateDetailType></TaxDetails></Tax><AmountDetailsSection><MoaDetails><Moa currencyCodeList="ISO_4217" amountTypeCode="I-176"><Amount currencyIdentifier="TND">380.000</Amount></Moa></MoaDetails></AmountDetailsSection></InvoiceTaxDetails></InvoiceTax>
+    <InvoiceAlc><AlcDetails><Alc><AlcTypeName code="I-190">Timbre fiscal</AlcTypeName></Alc><AmountDetailsSection><MoaDetails><Moa currencyCodeList="ISO_4217" amountTypeCode="I-184"><Amount currencyIdentifier="TND">1.000</Amount></Moa></MoaDetails></AmountDetailsSection></AlcDetails></InvoiceAlc>
+  </InvoiceBody>
+</TEIF>

@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS factures (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  numfact VARCHAR(50) NOT NULL,
+  datefact DATE,
+  mf_fournisseur VARCHAR(50),
+  fournisseur VARCHAR(255),
+  mf_client VARCHAR(50),
+  client VARCHAR(255),
+  ht DECIMAL(12,3),
+  tva DECIMAL(12,3),
+  timbre DECIMAL(12,3),
+  ttc DECIMAL(12,3),
+  xml_path VARCHAR(255),
+  xml_final_path VARCHAR(255),
+  ref_ttn VARCHAR(100),
+  qr_path VARCHAR(255),
+  cev TEXT,
+  statut ENUM('brouillon','envoye_ttn','valide','rejete') DEFAULT 'brouillon',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
