@@ -10,4 +10,3 @@ RUN composer install --no-dev --no-interaction --optimize-autoloader --no-script
 RUN mkdir -p uploads exports exportations && chmod -R 777 uploads exports exportations && chown -R www-data:www-data /var/www/html
 EXPOSE 80
 CMD ["apache2-foreground"]
-
