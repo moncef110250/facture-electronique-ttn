@@ -9,7 +9,12 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
     if($u && password_verify($pass, $u['password_hash'])){
         if($u['statut']==='bloque'){ $msg='Compte bloqué par administrateur.'; }
         elseif($u['statut']==='en_attente' && $u['role']!=='admin'){ $msg='Compte en attente de validation admin.'; }
-        else { $_SESSION['user']=$u; header('Location: dashboard.php'); exit; }
+        else { 
+            $_SESSION['user']=$u; 
+            // FIX: Admin reste sur son espace admin, pas dashboard client
+            if($u['role']==='admin'){ header('Location: admin.php'); exit; }
+            else { header('Location: dashboard.php'); exit; }
+        }
     } else { $msg='Login ou mot de passe incorrect.'; }
 }
 ?>
@@ -27,5 +32,5 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 <button class="btn btn-primary w-100 py-2" style="background:#0f172a;border:0">Se connecter</button>
 </form>
 <div class="text-center mt-3"><a href="register.php">Créer un compte client</a> | <a href="index.php">Retour accueil</a></div>
-<div class="mt-4 p-3 bg-light rounded small">Admin test: <b>admin / admin123</b></div>
+<div class="mt-4 p-3 bg-light rounded small">Admin test: <b>admin / admin123</b> → redirige vers Admin<br>Client → redirige vers Dashboard (même design SaaS)</div>
 </div></div></div></div></body></html>
