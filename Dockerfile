@@ -3,7 +3,5 @@ RUN apt-get update && apt-get install -y libzip-dev libpng-dev libonig-dev libxm
 RUN a2enmod rewrite
 COPY . /var/www/html/
 WORKDIR /var/www/html
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer install --no-dev --optimize-autoloader || echo "composer will run at startup"
-RUN chown -R www-data:www-data /var/www/html/uploads /var/www/html/exports && chmod -R 777 /var/www/html/uploads /var/www/html/exports
+RUN mkdir -p uploads exports && chown -R www-data:www-data /var/www/html && chmod -R 775 /var/www/html/uploads /var/www/html/exports
 EXPOSE 80
