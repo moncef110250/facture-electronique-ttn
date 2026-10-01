@@ -39,7 +39,7 @@ class TeifGenerator {
             $tabTtc[$j] = $sheet->getCell("F$i")->getCalculatedValue();
             
             if($tabTotht[$j] > 0) {
-                $xtaux = $tabTva[$j] * 100 / $tabTotht[$j];
+                $xtaux = floatval($tabTva[$j] ?? 0) * 100 / max(1,floatval($tabTotht[$j] ?? 0));
                 if(round($xtaux)==7) $tva7 += $tabTva[$j];
                 if(round($xtaux)==13) $tva13 += $tabTva[$j];
                 if(round($xtaux)==19) $tva19 += $tabTva[$j];
@@ -96,7 +96,7 @@ class TeifGenerator {
         for($k=1; $k<=14; $k++) {
             if(empty($d['tabARTICLE'][$k]) || floatval($d['tabTotht'][$k] ?? 0)==0) continue;
             $ligneXML++;
-            $taux = $d['tabTotht'][$k] > 0 ? round($d['tabTva'][$k]*100/$d['tabTotht'][$k]) : 0;
+            $taux = floatval($d['tabTotht'][$k] ?? 0) > 0 ? round(floatval($d['tabTva'][$k] ?? 0)*100/max(1,floatval($d['tabTotht'][$k] ?? 0))) : 0;
             $xml .= '      <Lin>'."\n";
             $xml .= '        <ItemIdentifier>'.$ligneXML.'</ItemIdentifier>'."\n";
             $xml .= '        <LinImd lang="fr"><ItemCode>ART'.str_pad($ligneXML,2,'0',STR_PAD_LEFT).'</ItemCode><ItemDescription>'.$this->esc($d['tabARTICLE'][$k]).'</ItemDescription></LinImd>'."\n";

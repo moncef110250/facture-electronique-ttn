@@ -1,146 +1,67 @@
-<?php
-// index.php - Application Web Facture Electronique Tunisie TTN
-session_start();
-require 'TeifGenerator.php';
-
-$message = "";
-$result = null;
-
-if($_SERVER['REQUEST_METHOD']==='POST' && isset($_FILES['xlsfile'])) {
-    $upload = __DIR__.'/uploads/'.basename($_FILES['xlsfile']['name']);
-    @mkdir(__DIR__.'/uploads', 0777, true);
-    @mkdir(__DIR__.'/exports', 0777, true);
-    move_uploaded_file($_FILES['xlsfile']['tmp_name'], $upload);
-    
-    try {
-        $gen = new TeifGenerator();
-        $gen->lireXLS($upload);
-        $result = $gen->genererXML_TEIF_190();
-        $message = "XML TEIF 1.9.0 généré avec succès !";
-        $_SESSION['last_xml'] = $result['path'];
-        $_SESSION['last_data'] = $result['data'];
-    } catch(Exception $e) {
-        $message = "Erreur: ".$e->getMessage();
-    }
-}
-?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<title>Facture Electronique Tunisie - TTN El Fatoora - Web</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<?php require 'config.php'; ?>
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El Fatoora Pro - Facture Electronique TTN Tunisie</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
 <style>
-body{background:#f5f7fb}
-.card{border-radius:18px; box-shadow:0 10px 30px rgba(0,0,0,.07)}
-.qr-box{background:white; padding:20px; border-radius:12px; text-align:center}
-</style>
-</head>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+body{font-family:Inter,system-ui;background:#f8fafc}
+.navbar{background:rgba(255,255,255,.9)!important;backdrop-filter:blur(12px);box-shadow:0 1px 20px rgba(0,0,0,.05)}
+.hero{background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 50%,#2563eb 100%);color:white;border-radius:0 0 40px 40px;padding:80px 0 100px}
+.card{border-radius:20px;border:0;box-shadow:0 8px 30px rgba(0,0,0,.06)}
+.btn-primary{background:#0f172a;border:0;padding:12px 24px;border-radius:12px} .btn-primary:hover{background:#1e293b}
+.btn-success{background:#16a34a;border:0;border-radius:12px}
+.pricing-card{transition:.2s} .pricing-card:hover{transform:translateY(-6px);box-shadow:0 20px 40px rgba(0,0,0,.12)}
+.badge-ttn{background:#dcfce7;color:#166534;border-radius:20px;padding:6px 12px}
+.upload-demo{border:2px dashed #cbd5e1;border-radius:16px;padding:20px;background:white}
+</style></head>
 <body>
-<div class="container py-4">
-<h2 class="mb-4">🇹🇳 Facture Electronique TTN - Version Web PHP</h2>
-<p class="text-muted">Conversion de ton appli WINDEV 24 Desktop → Web. Même logique que <code>lecturexls.txt</code> + <code>fact.xlsx</code></p>
+<nav class="navbar navbar-expand-lg sticky-top"><div class="container">
+<a class="navbar-brand fw-bold" href="#">🇹🇳 El Fatoora Pro <span class="badge-ttn ms-2">TTN TEIF 1.9.0</span></a>
+<div class="ms-auto d-flex gap-2">
+<a href="#tarifs" class="btn btn-outline-dark btn-sm">Tarifs</a>
+<?php if(isLogged()):?><a href="dashboard.php" class="btn btn-primary btn-sm">Dashboard</a>
+<?php else:?><a href="login.php" class="btn btn-outline-dark btn-sm">Connexion</a><a href="register.php" class="btn btn-primary btn-sm">Ouvrir un compte</a><?php endif;?>
+</div></div></nav>
 
-<div class="row">
-<div class="col-md-6">
-<div class="card p-4 mb-4">
-<h5>1. Upload XLS (fact.xlsx)</h5>
-<form method="post" enctype="multipart/form-data">
-<input type="file" name="xlsfile" accept=".xlsx,.xls" class="form-control mb-3" required>
-<button class="btn btn-primary w-100">Générer XML TEIF 1.9.0</button>
-</form>
-<?php if($message): ?>
-<div class="alert alert-info mt-3"><?=$message?></div>
-<?php endif; ?>
+<section class="hero"><div class="container"><div class="row align-items-center">
+<div class="col-lg-6">
+<h1 class="display-5 fw-bold mb-3">Facturation électronique<br>conforme TTN en 30s</h1>
+<p class="lead opacity-75 mb-4">Conversion de votre appli WINDEV 24 → SaaS Web PHP. Générez XML TEIF 1.9.0 + PDF avec QR Code CEV ANCE. Validation admin, abonnements payants.</p>
+<div class="d-flex gap-3 mb-4">
+<a href="register.php" class="btn btn-light btn-lg"><i class="bi bi-rocket"></i> Créer mon compte</a>
+<a href="login.php" class="btn btn-outline-light btn-lg">Se connecter</a>
 </div>
+<div class="d-flex gap-4 small"><span><i class="bi bi-check-circle"></i> Sans affichage XML brut</span><span><i class="bi bi-check-circle"></i> Boutons téléchargement direct</span><span><i class="bi bi-check-circle"></i> Rapport imprimable</span></div>
+</div>
+<div class="col-lg-6 mt-4 mt-lg-0">
+<div class="card p-4 text-dark">
+<div class="d-flex justify-content-between align-items-center mb-3"><h6 class="mb-0"><i class="bi bi-file-earmark-excel text-success"></i> fact.xlsx → TTN</h6><span class="badge bg-success">TEIF 1.9.0</span></div>
+<div class="upload-demo text-center mb-3"><i class="bi bi-cloud-upload" style="font-size:32px;color:#2563eb"></i><p class="small mb-1 mt-2">Glissez fact.xlsx ici</p><span class="small text-muted">A2 Fournisseur, A7 Client, lignes 13-26 articles</span></div>
+<div class="p-3 bg-light rounded">
+<div class="d-flex justify-content-between small mb-2"><span>Facture 20260001 - 25/08/2026</span><span class="badge bg-dark">2000 HT</span></div>
+<div class="d-grid gap-2">
+<button class="btn btn-success btn-sm"><i class="bi bi-filetype-xml"></i> Télécharger XML TEIF 1.9.0</button>
+<button class="btn btn-primary btn-sm"><i class="bi bi-filetype-pdf"></i> Télécharger Facture PDF</button>
+</div>
+<div class="mt-2 small text-muted text-center">QR Code TTN 2.5x2.5cm + CEV après validation</div>
+</div>
+</div>
+</div>
+</div></div></section>
 
-<?php if($result): ?>
-<div class="card p-4">
-<h5>2. Résultat</h5>
-<p><b>Facture:</b> <?=$result['data']['sNumfact']?> | <b>Date:</b> <?=$result['data']['dateObj']->format('d/m/Y')?></p>
-<p><b>Fournisseur:</b> <?=$result['data']['sFournisseur']?> (<?=$result['data']['sMatfiscfour']?>)</p>
-<p><b>Client:</b> <?=$result['data']['sClient']?> (<?=$result['data']['sMatfisccli']?>)</p>
-<p><b>HT:</b> <?=$result['data']['Htfacture']?> | <b>TVA:</b> <?=$result['data']['xtotaltva']?> | <b>Timbre:</b> <?=$result['data']['timbre']?> | <b>TTC:</b> <?=$result['data']['xTtcfacture']?></p>
-<a href="exports/<?=basename($result['path'])?>" class="btn btn-success" download>Télécharger XML TEIF v1.9.0 (withoutSig)</a>
-<pre class="mt-3 small" style="max-height:300px; overflow:auto; background:#f8f9fa; padding:10px"><?=htmlspecialchars(substr($result['xml'],0,2000))?>...</pre>
-</div>
-<?php endif; ?>
-</div>
+<section class="container py-5"><div class="row g-4">
+<div class="col-md-4"><div class="card p-4 h-100"><i class="bi bi-shield-check" style="font-size:32px;color:#2563eb"></i><h5 class="mt-3">Conforme TTN 2026</h5><p class="small text-muted">TEIF 1.9.0, signature électronique, conservation 10 ans obligatoire. Plus de Deprecated, fix 46259 Excel.</p></div></div>
+<div class="col-md-4"><div class="card p-4 h-100"><i class="bi bi-printer" style="font-size:32px;color:#f59e0b"></i><h5 class="mt-3">Rapport imprimable</h5><p class="small text-muted">État des factures émises entre 2 dates, total HT/TVA/TTC, bouton Imprimer intégré.</p></div></div>
+<div class="col-md-4"><div class="card p-4 h-100"><i class="bi bi-people" style="font-size:32px;color:#16a34a"></i><h5 class="mt-3">SaaS Payant</h5><p class="small text-muted">Comptes clients, validation par admin, blocage, forfaits mensuel/annuel/usage.</p></div></div>
+</div></section>
 
-<div class="col-md-6">
-<div class="card p-4 mb-4">
-<h5>3. Envoi TTN + QR Code</h5>
-<p class="small text-muted">Après génération, envoi à TTN pour récupérer Référence Unique + QR Code + CEV</p>
+<section id="tarifs" class="container py-5"><h2 class="text-center fw-bold mb-1">Tarifs simples et transparents</h2><p class="text-center text-muted mb-5">Service payant - Validation par administrateur</p>
+<div class="row g-4 justify-content-center">
+<div class="col-md-4"><div class="card p-4 pricing-card h-100"><h5>À l'usage</h5><h2 class="fw-bold">1 DT <small class="fs-6 text-muted">/ facture</small></h2><ul class="small mt-3"><li>XML TEIF 1.9.0 + PDF</li><li>Téléchargements illimités</li><li>Rapport entre 2 dates</li><li>Support email</li></ul><a href="register.php" class="btn btn-outline-dark w-100 mt-3">Choisir</a></div></div>
+<div class="col-md-4"><div class="card p-4 pricing-card h-100 border-primary border-2"><span class="badge bg-primary mb-2">Populaire</span><h5>Mensuel</h5><h2 class="fw-bold">49 DT <small class="fs-6 text-muted">/ mois</small></h2><ul class="small mt-3"><li><b>Factures illimitées</b></li><li>XML + PDF + QR TTN</li><li>Rapports imprimables</li><li>Support prioritaire</li></ul><a href="register.php" class="btn btn-primary w-100 mt-3">Choisir Mensuel</a></div></div>
+<div class="col-md-4"><div class="card p-4 pricing-card h-100"><h5>Annuel</h5><h2 class="fw-bold">490 DT <small class="fs-6 text-muted">/ an</small></h2><p class="small text-success">2 mois offerts</p><ul class="small"><li><b>Factures illimitées</b></li><li>Tout inclus</li><li>Archivage 10 ans</li><li>Accès API TTN</li></ul><a href="register.php" class="btn btn-outline-dark w-100 mt-3">Choisir Annuel</a></div></div>
+</div></section>
 
-<?php if($result): ?>
-<form method="post" action="envoi_ttn.php">
-<input type="hidden" name="xml_path" value="<?=$result['path']?>">
-<div class="mb-2">
-<label>Mode envoi</label>
-<select name="mode" class="form-select">
-<option value="api">API REST TTN (test)</option>
-<option value="sftp">SFTP TTN (prod)</option>
-<option value="simulation">SIMULATION (sans TTN)</option>
-</select>
-</div>
-<div class="mb-2">
-<label>Token TTN / Login SFTP</label>
-<input type="text" name="token" class="form-control" placeholder="Bearer token ou login SFTP">
-</div>
-<button class="btn btn-dark w-100">Envoyer à TTN et récupérer QR</button>
-</form>
-
-<div class="mt-4 p-3 bg-light rounded">
-<h6>Que doit contenir le QR Code TTN ?</h6>
-<ul class="small">
-<li><b>Référence Unique TTN</b> ex: 0736-2026-20260001-000123 (attribuée par TTN)</li>
-<li><b>MF Fournisseur + MF Client</b></li>
-<li><b>Num facture + Date + Montant HT/TTC</b></li>
-<li><b>Cachet Electronique Visible CEV 2D-Doc ANCE</b> (QR signé)</li>
-<li>URL vérif: https://el-fatoora.tn/verify?ref=...</li>
-</ul>
-<p class="small text-danger"><b>Important:</b> Tu ne génères pas le QR toi-même. C'est TTN qui te le donne après validation.</p>
-</div>
-<?php else: ?>
-<p class="text-muted">Génère d'abord le XML</p>
-<?php endif; ?>
-</div>
-
-<div class="card p-4">
-<h5>4. Facture avec QR (aperçu final)</h5>
-<div class="qr-box">
-<?php if(isset($_SESSION['qr'])): ?>
-<img src="<?=$_SESSION['qr']?>" style="width:180px; height:180px"><br>
-<small>Réf TTN: <?=$_SESSION['ref_ttn']?></small>
-<?php else: ?>
-<div style="width:180px; height:180px; background:#eee; margin:0 auto; display:flex; align-items:center; justify-content:center">QR Code TTN<br>2.5x2.5cm</div>
-<small class="text-muted">QR apparaîtra ici après envoi TTN</small>
-<?php endif; ?>
-</div>
-</div>
-</div>
-</div>
-</div>
-
-<div class="mt-4 card p-4">
-<h5>Architecture PHP Web (conversion WINDEV24)</h5>
-<pre class="small">WINDEV Desktop:
-  lecturexls.txt (xlsOuvre, xlsDonnée) -> tableaux tabARTICLE[] + totaux
-  Génération XML texte pur (WINDEV24_TEXTE_PUR.wl)
-  sFTPConnecte + sFTPEnvoieFichier -> TTN
-
-PHP Web:
-  PhpSpreadsheet (équivalent xlsOuvre) -> TeifGenerator.php::lireXLS()
-  Génération XML TEIF 1.9.0 (même structure)
-  phpseclib SFTP + Guzzle HTTP pour API TTN
-  Base MySQL pour archivage 10 ans obligatoire
-
-Base de données MySQL:
-  CREATE TABLE factures (id, numfact, datefact, mf_fournisseur, mf_client, ht, tva, timbre, ttc, xml_path, ref_ttn, qr_path, cev, statut)
-</pre>
-</div>
-
-</div>
-</body>
-</html>
+<footer class="bg-dark text-white py-4 mt-5"><div class="container text-center small"><p class="mb-1">🇹🇳 El Fatoora Pro - Facture Electronique TTN TEIF 1.9.0 - Conversion WINDEV24 → Web PHP</p><p class="opacity-50">Domaine officiel à venir - Test grandeur nature sur Render - Admin: admin/admin123</p></div></footer>
+</body></html>

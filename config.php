@@ -1,17 +1,28 @@
 <?php
-// Configuration TTN El Fatoora - Tunisie TEIF 1.9.0
-define('TTN_SFTP_HOST', 'sftp.ttn.tn');
-define('TTN_SFTP_PORT', 22);
-define('TTN_SFTP_LOGIN', getenv('TTN_LOGIN') ?: 'VOTRE_LOGIN_TTN');
-define('TTN_SFTP_PASS', getenv('TTN_PASS') ?: 'VOTRE_MDP_TTN');
-define('TTN_API_URL', 'https://ws-ttn.tn/el-fatoora/api/v1/invoices');
-define('TTN_API_TOKEN', getenv('TTN_TOKEN') ?: 'VOTRE_JWT_TOKEN');
-define('TTN_MODE', getenv('TTN_MODE') ?: 'simulation'); // simulation | sftp | api
-
-define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
-define('DB_NAME', getenv('DB_NAME') ?: 'facture_electronique');
-define('DB_USER', getenv('DB_USER') ?: 'root');
-define('DB_PASS', getenv('DB_PASS') ?: '');
-
-define('SITE_URL', getenv('SITE_URL') ?: 'http://localhost:8000');
+session_start();
+function db() {
+    static $pdo=null;
+    if($pdo===null){
+        $dbFile = __DIR__.'/data.db';
+        $pdo = new PDO("sqlite:".$dbFile);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $sql = file_get_contents(__DIR__.'/database.sql');
+        // Split by ; for SQLite init
+        $stmts = array_filter(array_map('trim', explode(';', $sql)));
+        foreach($stmts as $stmt){
+            if(stripos($stmt,'CREATE TABLE')!==false) $pdo->exec($stmt);
+        }
+        // Admin par défaut si vide
+        $cnt = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
+        if($cnt==0){
+            $hash = password_hash('admin123', PASSWORD_DEFAULT);
+            $pdo->exec("INSERT INTO users (raison_sociale, matricule_fiscal, email, login, password_hash, role, statut, forfait) VALUES ('Administrateur TTN','ADMIN000','admin@elfatoora.tn','admin','".$hash."','admin','actif','annuel')");
+        }
+    }
+    return $pdo;
+}
+function isLogged(){ return isset($_SESSION['user']); }
+function isAdmin(){ return isset($_SESSION['user']) && $_SESSION['user']['role']==='admin'; }
+function requireLogin(){ if(!isLogged()){ header('Location: login.php'); exit; } }
+function requireAdmin(){ if(!isAdmin()){ header('Location: dashboard.php'); exit; } }
 ?>

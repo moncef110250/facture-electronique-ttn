@@ -1,20 +1,40 @@
+-- SaaS Facture Electronique TTN - MySQL + SQLite compatible
+CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  raison_sociale TEXT NOT NULL,
+  matricule_fiscal TEXT NOT NULL UNIQUE,
+  registre_commerce TEXT,
+  adresse TEXT,
+  email TEXT NOT NULL UNIQUE,
+  telephone TEXT,
+  login TEXT NOT NULL UNIQUE,
+  password_hash TEXT NOT NULL,
+  role TEXT DEFAULT 'client',
+  statut TEXT DEFAULT 'en_attente',
+  forfait TEXT DEFAULT 'usage',
+  date_inscription DATETIME DEFAULT CURRENT_TIMESTAMP,
+  date_validation DATETIME,
+  factures_utilisees INTEGER DEFAULT 0
+);
+
 CREATE TABLE IF NOT EXISTS factures (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  numfact VARCHAR(50) NOT NULL,
-  datefact DATE,
-  mf_fournisseur VARCHAR(50),
-  fournisseur VARCHAR(255),
-  mf_client VARCHAR(50),
-  client VARCHAR(255),
-  ht DECIMAL(12,3),
-  tva DECIMAL(12,3),
-  timbre DECIMAL(12,3),
-  ttc DECIMAL(12,3),
-  xml_path VARCHAR(255),
-  xml_final_path VARCHAR(255),
-  ref_ttn VARCHAR(100),
-  qr_path VARCHAR(255),
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER,
+  numfact TEXT NOT NULL,
+  datefact TEXT,
+  mf_fournisseur TEXT,
+  fournisseur TEXT,
+  mf_client TEXT,
+  client TEXT,
+  ht REAL,
+  tva REAL,
+  timbre REAL,
+  ttc REAL,
+  xml_path TEXT,
+  pdf_path TEXT,
+  ref_ttn TEXT,
+  qr_path TEXT,
   cev TEXT,
-  statut ENUM('brouillon','envoye_ttn','valide','rejete') DEFAULT 'brouillon',
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  statut TEXT DEFAULT 'brouillon',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
