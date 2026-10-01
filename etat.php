@@ -56,12 +56,10 @@ tfoot th:last-child{border-radius:0 8px 8px 0}
 </head>
 <body>
 
-<div class="btn-bar">
-<a href="dashboard.php" class="btn btn-outline">← Retour Dashboard</a>
-<button onclick="window.print()" class="btn btn-dark">🖨️ Imprimer l'état</button>
-<a href="etat.php?date_debut=<?=$date_debut?>&date_fin=<?=$date_fin?>&pdf=1" class="btn btn-outline">📄 Télécharger PDF État</a>
+<div style="text-align:center; margin:20px;">
+<a href="dashboard.php" style="padding:10px 18px; border:1px solid #ccc; border-radius:10px; text-decoration:none; color:#0f172a;">← Retour Dashboard</a>
 </div>
-
+    
 <div class="page">
 <div class="header">
 <div>
@@ -151,13 +149,13 @@ Période du <b><?=fmtFR($date_debut)?></b> au <b><?=fmtFR($date_fin)?></b> &nbsp
 
 </div>
 
-<?php
-// Si ?pdf=1 => génération PDF avec TCPDF
-if(isset($_GET['pdf']) && $_GET['pdf']=='1'){
-    require 'vendor/autoload.php';
-    // On génère un PDF simple via capture HTML
-    echo "<script>window.addEventListener('load', ()=>{ setTimeout(()=>window.print(), 500) });</script>";
-}
-?>
+// <?php
+// // Si ?pdf=1 => génération PDF avec TCPDF
+// if(isset($_GET['pdf']) && $_GET['pdf']=='1'){
+//     require 'vendor/autoload.php';
+//     // On génère un PDF simple via capture HTML
+//     echo "<script>window.addEventListener('load', ()=>{ setTimeout(()=>window.print(), 500) });</script>";
+// }
+// ?>
 
 </body></html>
