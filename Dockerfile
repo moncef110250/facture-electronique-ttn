@@ -5,4 +5,3 @@ COPY . /var/www/html/
 WORKDIR /var/www/html
 RUN mkdir -p uploads exports && chown -R www-data:www-data /var/www/html && chmod -R 775 /var/www/html/uploads /var/www/html/exports
 EXPOSE 80
-
