@@ -77,7 +77,7 @@ body{background:#f8fafc;font-family:Inter,system-ui}
 <div class="col-lg-7">
 <div class="card p-4">
 <h5 class="mb-2"><i class="bi bi-cloud-upload"></i> Nouvelle Facture depuis Excel</h5>
-<p class="text-muted small">Même logique WINDEV 24 - lecture A2-A10 + lignes 13-26</p>
+<p class="text-muted small">Import Excel conforme TTN - lecture entête et lignes de facturation</p>
 
 <div class="d-flex gap-2 mb-3 no-print">
 <a href="fact.xlsx" download class="btn btn-outline-success btn-sm"><i class="bi bi-download"></i> Télécharger modèle fact.xlsx</a>
@@ -127,8 +127,20 @@ body{background:#f8fafc;font-family:Inter,system-ui}
 <a href="dashboard.php" class="btn btn-outline-secondary btn-sm">Voir tout (<?=count($rapport)?>)</a>
 <?php if($isFiltered):?><span class="badge bg-info align-self-center">Filtré: <?=$_GET['date_debut']?> au <?=$_GET['date_fin']?></span><?php endif;?>
 </div>
+<?php
+$dd = $_GET['date_debut'] ?? date('Y-01-01');
+$df = $_GET['date_fin'] ?? date('Y-m-d');
+$ddFR = (new DateTime($dd))->format('d/m/Y');
+$dfFR = (new DateTime($df))->format('d/m/Y');
+?>
 <div id="rapportPrint">
-<div class="d-flex justify-content-between align-items-center mb-2"><h6 class="mb-0"><?=$isFiltered?'Rapport du '.$_GET['date_debut'].' au '.$_GET['date_fin']:'Mes dernières factures ('.count($rapport).')'?></h6><button onclick="window.print()" class="btn btn-outline-dark btn-sm no-print"><i class="bi bi-printer"></i> Imprimer état</button></div>
+<div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+<h6 class="mb-0"><?=$isFiltered?'Période du '.$ddFR.' au '.$dfFR:'Mes dernières factures ('.count($rapport).')'?></h6>
+<div class="d-flex gap-1 no-print">
+<a href="etat.php?date_debut=<?=$dd?>&date_fin=<?=$df?>" target="_blank" class="btn btn-dark btn-sm"><i class="bi bi-printer"></i> État imprimable</a>
+</div>
+</div>
+<?php if($isFiltered):?><div class="small text-muted mb-2">Période du <b><?=$ddFR?></b> au <b><?=$dfFR?></b></div><?php endif;?>
 <?php if($rapport && count($rapport)>0):?>
 <table class="table table-sm small"><thead><tr><th>N°</th><th>Date</th><th>Client</th><th>TTC</th><th>Action</th></tr></thead><tbody>
 <?php $tot=0; foreach($rapport as $f): $tot+= $f['ttc']; ?>
@@ -150,6 +162,6 @@ body{background:#f8fafc;font-family:Inter,system-ui}
 </div>
 </div>
 
-<div class="mt-4 card p-3 small text-muted no-print">Architecture: WINDEV24 → PHP TeifGenerator.php::lireXLS() + genererXML_TEIF_190() + genererFacturePDF() - Conforme TTN El Fatoora - FIX: rapport 0, modèle XLSX, redirection admin</div>
+<div class="mt-4 card p-3 small text-muted no-print">El Fatoora Pro - Conforme TTN El Fatoora TEIF 1.9.0 - Architecture SaaS PHP 8.2 - PDF + XML automatique</div>
 </div>
 </body></html>

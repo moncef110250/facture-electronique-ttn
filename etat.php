@@ -46,20 +46,21 @@ tfoot th:first-child{border-radius:8px 0 0 8px}
 tfoot th:last-child{border-radius:0 8px 8px 0}
 .text-right{text-align:right} .text-center{text-align:center}
 .footer{margin-top:28px; display:flex; justify-content:space-between; font-size:11px; color:#64748b; border-top:1px dashed #cbd5e1; padding-top:12px}
-.btn-bar{display:flex; gap:10px; justify-content:center; margin:20px auto; max-width:1100px}
+/* btn-bar removed */
 .btn{padding:10px 18px; border-radius:10px; border:0; cursor:pointer; font-weight:600; font-size:13px; text-decoration:none; display:inline-flex; align-items:center; gap:6px}
 .btn-dark{background:#0f172a; color:white} .btn-outline{background:white; border:1px solid #cbd5e1}
 @media print{
-  body{background:white} .page{box-shadow:none; margin:0; border-radius:0; padding:20px} .btn-bar{display:none!important}
+  body{background:white} .page{box-shadow:none; margin:0; border-radius:0; padding:20px} 
 }
 </style>
 </head>
 <body>
 
-<div style="text-align:center; margin:20px;">
-<a href="dashboard.php" style="padding:10px 18px; border:1px solid #ccc; border-radius:10px; text-decoration:none; color:#0f172a;">← Retour Dashboard</a>
+<div style="display:flex; justify-content:center; gap:12px; margin:20px auto; max-width:1100px;">
+<a href="dashboard.php" style="background:white; border:1px solid #cbd5e1; padding:10px 18px; border-radius:10px; text-decoration:none; color:#0f172a; font-weight:600; font-size:13px;">← Retour Dashboard</a>
+<span style="font-size:12px; color:#64748b; align-self:center;">Ctrl+P pour imprimer / Enregistrer en PDF</span>
 </div>
-    
+
 <div class="page">
 <div class="header">
 <div>
@@ -149,13 +150,6 @@ Période du <b><?=fmtFR($date_debut)?></b> au <b><?=fmtFR($date_fin)?></b> &nbsp
 
 </div>
 
-// <?php
-// // Si ?pdf=1 => génération PDF avec TCPDF
-// if(isset($_GET['pdf']) && $_GET['pdf']=='1'){
-//     require 'vendor/autoload.php';
-//     // On génère un PDF simple via capture HTML
-//     echo "<script>window.addEventListener('load', ()=>{ setTimeout(()=>window.print(), 500) });</script>";
-// }
-// ?>
+
 
 </body></html>
